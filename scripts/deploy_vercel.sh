@@ -94,7 +94,7 @@ vercel git connect ${VERCEL_SCOPE_FLAG} >/dev/null 2>&1 || true
 # 9) Deploy to production without git metadata (avoid author permission errors)
 TMP_DIR="$(mktemp -d)"
 rsync -a --delete --exclude=".git" "${DEPLOY_DIR}/" "${TMP_DIR}/"
-DEPLOY_URL="$(vercel --prod --cwd "${TMP_DIR}" ${VERCEL_SCOPE_FLAG} | tail -n1)"
+DEPLOY_URL="$(vercel --prod --cwd "${TMP_DIR}" ${VERCEL_SCOPE_FLAG} --yes | tail -n1)"
 rm -rf "${TMP_DIR}"
 
 # 10) Add custom domain
