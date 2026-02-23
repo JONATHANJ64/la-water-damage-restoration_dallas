@@ -10,7 +10,7 @@ VERCEL_PROJECT_NAME="${VERCEL_PROJECT_NAME:-la-${SITE_SLUG}}"
 GITHUB_ORG="${GITHUB_ORG:-}"
 GITHUB_REPO="${GITHUB_REPO:-${VERCEL_PROJECT_NAME}}"
 VERCEL_SCOPE="${VERCEL_SCOPE:-}"
-VERCEL_SCOPE_FLAG=()
+VERCEL_SCOPE_FLAG=""
 LEAD_CAPTURE_MODE="${LEAD_CAPTURE_MODE:-vercel}"
 BACKEND_HOST="${BACKEND_HOST:-api.example.com}"
 
@@ -35,7 +35,7 @@ if [[ -z "${GITHUB_ORG}" ]]; then
 fi
 
 if [[ -n "${VERCEL_SCOPE}" ]]; then
-  VERCEL_SCOPE_FLAG=("--scope" "${VERCEL_SCOPE}")
+  VERCEL_SCOPE_FLAG="--scope ${VERCEL_SCOPE}"
 fi
 
 # 1) Sync site
@@ -70,7 +70,7 @@ fi
 git -C "${DEPLOY_DIR}" push -u origin main
 
 # 6) Create or reuse Vercel project
-PROJECT_EXISTS="$(vercel project ls --json "${VERCEL_SCOPE_FLAG[@]}" 2>/dev/null | python3 - <<PY
+PROJECT_EXISTS="$(vercel project ls --json ${VERCEL_SCOPE_FLAG} 2>/dev/null | python3 - <<PY
 import json, sys
 try:
     data = json.load(sys.stdin)
@@ -82,21 +82,21 @@ PY
 )"
 
 if [[ "${PROJECT_EXISTS}" != "yes" ]]; then
-  vercel project add "${VERCEL_PROJECT_NAME}" "${VERCEL_SCOPE_FLAG[@]}" --yes
+  vercel project add "${VERCEL_PROJECT_NAME}" ${VERCEL_SCOPE_FLAG} --yes
 fi
 
 # 7) Link local directory to Vercel project
-vercel link --project "${VERCEL_PROJECT_NAME}" "${VERCEL_SCOPE_FLAG[@]}" --yes
+vercel link --project "${VERCEL_PROJECT_NAME}" ${VERCEL_SCOPE_FLAG} --yes
 
 # 8) Attempt GitHub integration (non-fatal if unavailable)
-vercel git connect "${VERCEL_SCOPE_FLAG[@]}" --yes >/dev/null 2>&1 || true
+vercel git connect ${VERCEL_SCOPE_FLAG} --yes >/dev/null 2>&1 || true
 
 # 9) Deploy to production
-DEPLOY_URL="$(vercel --prod "${VERCEL_SCOPE_FLAG[@]}" --yes | tail -n1)"
+DEPLOY_URL="$(vercel --prod ${VERCEL_SCOPE_FLAG} --yes | tail -n1)"
 
 # 10) Add custom domain
-vercel domains add "${DOMAIN}" "${VERCEL_SCOPE_FLAG[@]}" --yes >/dev/null 2>&1 || true
-vercel project domains add "${VERCEL_PROJECT_NAME}" "${DOMAIN}" "${VERCEL_SCOPE_FLAG[@]}" --yes >/dev/null 2>&1 || true
+vercel domains add "${DOMAIN}" ${VERCEL_SCOPE_FLAG} --yes >/dev/null 2>&1 || true
+vercel project domains add "${VERCEL_PROJECT_NAME}" "${DOMAIN}" ${VERCEL_SCOPE_FLAG} --yes >/dev/null 2>&1 || true
 
 # Output
 printf "\nVercel Project: %s\n" "${VERCEL_PROJECT_NAME}"
