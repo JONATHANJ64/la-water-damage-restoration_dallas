@@ -86,7 +86,7 @@ if [[ "${PROJECT_EXISTS}" != "yes" ]]; then
 fi
 
 # 7) Link local directory to Vercel project
-vercel link --project "${VERCEL_PROJECT_NAME}" ${VERCEL_SCOPE_FLAG}
+vercel link --project "${VERCEL_PROJECT_NAME}" ${VERCEL_SCOPE_FLAG} --yes
 
 # 8) Attempt GitHub integration (non-fatal if unavailable)
 vercel git connect ${VERCEL_SCOPE_FLAG} >/dev/null 2>&1 || true
