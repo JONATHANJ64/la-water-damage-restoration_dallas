@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: /water-damage-restoration_dallas/sitemap.xml
