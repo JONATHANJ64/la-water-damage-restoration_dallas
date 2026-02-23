@@ -82,21 +82,21 @@ PY
 )"
 
 if [[ "${PROJECT_EXISTS}" != "yes" ]]; then
-  vercel project add "${VERCEL_PROJECT_NAME}" ${VERCEL_SCOPE_FLAG} --yes
+  vercel project add "${VERCEL_PROJECT_NAME}" ${VERCEL_SCOPE_FLAG}
 fi
 
 # 7) Link local directory to Vercel project
-vercel link --project "${VERCEL_PROJECT_NAME}" ${VERCEL_SCOPE_FLAG} --yes
+vercel link --project "${VERCEL_PROJECT_NAME}" ${VERCEL_SCOPE_FLAG}
 
 # 8) Attempt GitHub integration (non-fatal if unavailable)
-vercel git connect ${VERCEL_SCOPE_FLAG} --yes >/dev/null 2>&1 || true
+vercel git connect ${VERCEL_SCOPE_FLAG} >/dev/null 2>&1 || true
 
 # 9) Deploy to production
-DEPLOY_URL="$(vercel --prod ${VERCEL_SCOPE_FLAG} --yes | tail -n1)"
+DEPLOY_URL="$(vercel --prod ${VERCEL_SCOPE_FLAG} | tail -n1)"
 
 # 10) Add custom domain
-vercel domains add "${DOMAIN}" ${VERCEL_SCOPE_FLAG} --yes >/dev/null 2>&1 || true
-vercel project domains add "${VERCEL_PROJECT_NAME}" "${DOMAIN}" ${VERCEL_SCOPE_FLAG} --yes >/dev/null 2>&1 || true
+vercel domains add "${DOMAIN}" ${VERCEL_SCOPE_FLAG} >/dev/null 2>&1 || true
+vercel project domains add "${VERCEL_PROJECT_NAME}" "${DOMAIN}" ${VERCEL_SCOPE_FLAG} >/dev/null 2>&1 || true
 
 # Output
 printf "\nVercel Project: %s\n" "${VERCEL_PROJECT_NAME}"
