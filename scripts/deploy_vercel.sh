@@ -91,8 +91,11 @@ vercel link --project "${VERCEL_PROJECT_NAME}" ${VERCEL_SCOPE_FLAG} --yes
 # 8) Attempt GitHub integration (non-fatal if unavailable)
 vercel git connect ${VERCEL_SCOPE_FLAG} >/dev/null 2>&1 || true
 
-# 9) Deploy to production
-DEPLOY_URL="$(vercel --prod ${VERCEL_SCOPE_FLAG} | tail -n1)"
+# 9) Deploy to production without git metadata (avoid author permission errors)
+TMP_DIR="$(mktemp -d)"
+rsync -a --delete --exclude=".git" "${DEPLOY_DIR}/" "${TMP_DIR}/"
+DEPLOY_URL="$(vercel --prod --cwd "${TMP_DIR}" ${VERCEL_SCOPE_FLAG} | tail -n1)"
+rm -rf "${TMP_DIR}"
 
 # 10) Add custom domain
 vercel domains add "${DOMAIN}" ${VERCEL_SCOPE_FLAG} >/dev/null 2>&1 || true
