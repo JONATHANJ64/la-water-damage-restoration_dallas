@@ -3,13 +3,12 @@
   "public": true,
   "trailingSlash": false,
   "cleanUrls": false,
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/$", "dest": "/site/index.html" },
-    { "src": "/robots\\.txt", "dest": "/site/robots.txt" },
-    { "src": "/sitemap\\.xml", "dest": "/site/sitemap.xml" },
-    { "src": "/static/(.*)", "dest": "/site/static/$1" },
-    { "src": "/(.*)", "dest": "/site/$1" }
+  "rewrites": [
+    { "source": "/", "destination": "/site/index.html" },
+    { "source": "/robots.txt", "destination": "/site/robots.txt" },
+    { "source": "/sitemap.xml", "destination": "/site/sitemap.xml" },
+    { "source": "/static/:path*", "destination": "/site/static/:path*" },
+    { "source": "/:path*", "destination": "/site/:path*" }
   ],
   "headers": [
     {
